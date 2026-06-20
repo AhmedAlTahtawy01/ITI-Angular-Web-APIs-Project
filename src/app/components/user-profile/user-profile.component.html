@@ -1,0 +1,132 @@
+<div class="profile-wrapper">
+
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-state">
+      <div class="spinner-lg"></div>
+      <p>Loading Profile...</p>
+    </div>
+  }
+
+  <!-- Error State (When loading completes but no user data is retrieved) -->
+  @if (!isLoading && !user && errorMessage) {
+    <div class="profile-card" style="padding: 2.5rem; text-align: center; border-radius: 1.5rem; background: #fff; box-shadow: 0 20px 50px rgba(0,0,0,0.12);">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+      <h2 style="font-size: 1.25rem; font-weight: 700; color: #b91c1c; margin-bottom: 0.5rem;">Sorry, failed to load data</h2>
+      <p style="color: #6b7280; margin-bottom: 1.5rem; font-size: 0.9rem;">{{ errorMessage }}</p>
+      <div style="display: flex; justify-content: center; gap: 1rem;">
+        <button class="btn-submit" (click)="loadProfile()" style="max-width: 150px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; font-size: 0.88rem; font-weight: 600; padding: 0.6rem 1rem; border-radius: 0.5rem; cursor: pointer;">🔄 Retry</button>
+        <button class="btn-logout" (click)="logout()" style="max-width: 150px; background: #ef4444; color: white; border: none; font-size: 0.88rem; font-weight: 600; padding: 0.6rem 1rem; border-radius: 0.5rem; cursor: pointer;">🚪 Logout</button>
+      </div>
+    </div>
+  }
+
+  <!-- Profile Card -->
+  @if (!isLoading && user) {
+    <div class="profile-card">
+
+      <!-- Header -->
+      <div class="profile-header">
+        <div class="avatar">
+          @if (user.photoUrl) {
+            <img [src]="user.photoUrl" [alt]="user.firstName" class="avatar-img" />
+          } @else {
+            <span class="avatar-initials">{{ user.firstName[0] }}{{ user.lastName[0] }}</span>
+          }
+        </div>
+        <div class="profile-info">
+          <h1 class="profile-name">{{ user.firstName }} {{ user.lastName }}</h1>
+          <p class="profile-email">{{ user.email }}</p>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-edit" (click)="toggleEdit()">
+            {{ isEditing ? '❌ Cancel' : '✏️ Edit' }}
+          </button>
+          <button class="btn-logout" (click)="logout()">🚪 Logout</button>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      @if (successMessage) {
+        <div class="alert-success">{{ successMessage }}</div>
+      }
+      @if (errorMessage) {
+        <div class="alert-error">⚠️ {{ errorMessage }}</div>
+      }
+
+      <!-- View Mode -->
+      @if (!isEditing) {
+        <div class="profile-details">
+          <div class="detail-row"><span class="detail-label">First Name</span><span class="detail-value">{{ user.firstName }}</span></div>
+          <div class="detail-row"><span class="detail-label">Last Name</span><span class="detail-value">{{ user.lastName }}</span></div>
+          <div class="detail-row"><span class="detail-label">Email Address</span><span class="detail-value">{{ user.email }}</span></div>
+          <div class="detail-row"><span class="detail-label">Address</span><span class="detail-value">{{ user.adress || '—' }}</span></div>
+        </div>
+      }
+
+      <!-- Edit Form -->
+      @if (isEditing) {
+        <form [formGroup]="editForm" (ngSubmit)="saveProfile()" class="edit-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" formControlName="firstName" class="form-input"
+                [class.input-error]="firstName.invalid && firstName.touched" placeholder="First Name" />
+              @if (firstName.invalid && firstName.touched) {
+                <span class="error-msg">First name is required</span>
+              }
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" formControlName="lastName" class="form-input"
+                [class.input-error]="lastName.invalid && lastName.touched" placeholder="Last Name" />
+              @if (lastName.invalid && lastName.touched) {
+                <span class="error-msg">Last name is required</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Address</label>
+            <input type="text" formControlName="adress" class="form-input" placeholder="Your address" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Profile Picture URL</label>
+            <input type="url" formControlName="photoUrl" class="form-input" placeholder="https://..." />
+          </div>
+
+          <div class="divider"><span>Change Password</span></div>
+
+          <div class="form-group">
+            <label class="form-label">Current Password <span class="required">*</span></label>
+            <input type="password" formControlName="oldPassword" class="form-input"
+              [class.input-error]="oldPwd.invalid && oldPwd.touched" placeholder="••••••••" />
+            @if (oldPwd.invalid && oldPwd.touched) {
+              <span class="error-msg">Current password is required to save changes</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">New Password <span class="optional">(Optional)</span></label>
+            <input type="password" formControlName="newPassword" class="form-input" placeholder="Leave empty if you don't want to change it" />
+          </div>
+
+          <div class="form-footer">
+            <button type="submit" class="btn-submit" [disabled]="isSaving">
+              @if (isSaving) { <span class="spinner"></span> Saving... }
+              @else { 💾 Save Changes }
+            </button>
+          </div>
+        </form>
+      }
+
+      <!-- Wishlist Link -->
+      <div class="profile-nav">
+        <a routerLink="/wishlist" class="nav-link">❤️ Wishlist</a>
+      </div>
+
+    </div>
+  }
+
+</div>

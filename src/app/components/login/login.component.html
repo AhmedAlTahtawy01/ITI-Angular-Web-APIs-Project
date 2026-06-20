@@ -1,0 +1,90 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <!-- Header -->
+    <div class="auth-header">
+      <div class="auth-icon">🔐</div>
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-subtitle">Sign in to your account to continue</p>
+    </div>
+
+    <!-- Form -->
+<form *ngIf="loginForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form" novalidate>
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <div class="input-wrapper">
+          <span class="input-icon">✉️</span>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="form-input"
+            [class.input-error]="email.invalid && email.touched"
+            placeholder="example@email.com"
+            autocomplete="email"
+          />
+        </div>
+        @if (email.invalid && email.touched) {
+          <span class="error-msg">
+            {{ email.errors?.['required'] ? 'Email address is required' : 'Please enter a valid email address' }}
+          </span>
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <div class="label-row">
+          <label for="password" class="form-label">Password</label>
+          <a routerLink="/forgot-password" class="forgot-link">Forgot Password?</a>
+        </div>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            class="form-input"
+            [class.input-error]="password.invalid && password.touched"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+          <button type="button" class="toggle-pass" (click)="togglePassword()" tabindex="-1">
+            {{ showPassword ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (password.invalid && password.touched) {
+          <span class="error-msg">
+            {{ password.errors?.['required'] ? 'Password is required' : 'Password must be at least 6 characters' }}
+          </span>
+        }
+      </div>
+
+      <!-- Remember Me -->
+      <div class="form-check">
+        <input id="rememberMe" type="checkbox" formControlName="rememberMe" class="check-input" />
+        <label for="rememberMe" class="check-label">Remember me</label>
+      </div>
+
+      <!-- Error Alert -->
+      @if (errorMessage) {
+        <div class="alert-error">⚠️ {{ errorMessage }}</div>
+      }
+
+      <!-- Submit -->
+      <button type="submit" class="btn-submit" [disabled]="isLoading">
+        @if (isLoading) {
+          <span class="spinner"></span> Signing in...
+        } @else {
+          Sign In
+        }
+      </button>
+
+    </form>
+
+    <!-- Footer -->
+    <div class="auth-footer">
+      <p>Don't have an account? <a routerLink="/register" class="link-accent">Create one</a></p>
+    </div>
+
+  </div>
+</div>
