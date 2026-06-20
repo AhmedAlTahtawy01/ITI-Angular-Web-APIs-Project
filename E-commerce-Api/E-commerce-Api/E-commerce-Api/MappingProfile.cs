@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Entities.Models;
 using Shared.DTO;
 using WebApplication1.Models;
@@ -18,6 +18,7 @@ namespace BookApp
             CreateMap<User, UserDto>();
 
             CreateMap<Order, OrderDto>();
+            CreateMap<OrderDetails, OrderDetailsDto>();
 
             CreateMap<CateogryForCreationDto, Cateogry>();
 

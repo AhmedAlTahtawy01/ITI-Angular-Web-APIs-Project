@@ -1,4 +1,4 @@
-﻿using Contracts;
+using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
@@ -91,7 +91,10 @@ namespace Repository
 
         public async Task<Order> GetOrderAsync( int OrderId, bool TrackChanges)
         {
-            return await FindByCondition(o => o.Id == OrderId,TrackChanges).SingleOrDefaultAsync();
+            return await FindByCondition(o => o.Id == OrderId, TrackChanges)
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                .SingleOrDefaultAsync();
         }
     }
 }

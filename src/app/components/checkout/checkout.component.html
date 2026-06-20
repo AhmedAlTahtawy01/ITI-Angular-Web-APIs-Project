@@ -1,0 +1,114 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col">
+      <h1 class="text-white fw-bold header-gradient">🛍️ Complete Your Purchase</h1>
+      <p class="text-indigo">Review your order details and enter your shipping address</p>
+    </div>
+  </div>
+
+  <div *ngIf="cartItems.length === 0" class="row my-5">
+    <div class="col text-center text-white py-5 glass-panel">
+      <div class="empty-cart-emoji">🛒</div>
+      <h3 class="fw-bold mt-3">Your shopping cart is empty</h3>
+      <p class="text-muted">Explore our catalog to find exciting products and add them to your cart.</p>
+      <a routerLink="/products" class="btn btn-premium mt-3">🛍️ Browse Products</a>
+    </div>
+  </div>
+
+  <div class="row g-4" *ngIf="cartItems.length > 0">
+    <!-- Left Column: Checkout Form -->
+    <div class="col-lg-7">
+      <div class="glass-panel p-4 h-100 text-white">
+        <h3 class="fw-bold mb-4 border-bottom border-secondary pb-2">🚚 Delivery Information</h3>
+
+        <form [formGroup]="checkoutForm" (ngSubmit)="submitOrder()" novalidate>
+          <div class="mb-4">
+            <label for="address" class="form-label fw-semibold">Shipping Address <span class="text-danger">*</span></label>
+            <textarea
+              id="address"
+              formControlName="address"
+              class="form-control premium-input"
+              rows="3"
+              placeholder="123 Luxury Ave, Apartment 4B, Cairo, Egypt"
+              [class.is-invalid]="address?.invalid && address?.touched"
+            ></textarea>
+            <div class="invalid-feedback" *ngIf="address?.errors?.['required']">
+              Shipping address is required.
+            </div>
+            <div class="invalid-feedback" *ngIf="address?.errors?.['minlength']">
+              Address must be at least 5 characters long.
+            </div>
+          </div>
+
+          <div class="payment-method-box p-3 mb-4 rounded">
+            <h5 class="fw-bold mb-2">💵 Payment Method</h5>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="paymentMethod" id="cod" checked>
+              <label class="form-check-label fw-medium text-white" for="cod">
+                Cash on Delivery (COD)
+              </label>
+              <p class="text-muted small mb-0 mt-1">Pay with cash when your package is delivered to your door step.</p>
+            </div>
+          </div>
+
+          <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+            ⚠️ {{ errorMessage }}
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-premium btn-lg w-100 py-3 mt-2"
+            [disabled]="isSubmitting || checkoutForm.invalid"
+          >
+            <span class="spinner-border spinner-border-sm me-2" *ngIf="isSubmitting" role="status" aria-hidden="true"></span>
+            {{ isSubmitting ? 'Placing Order...' : '🚀 Place Secure Order' }}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Column: Order Summary -->
+    <div class="col-lg-5">
+      <div class="glass-panel p-4 text-white">
+        <h3 class="fw-bold mb-4 border-bottom border-secondary pb-2">📋 Order Summary</h3>
+
+        <div class="summary-item-list mb-4">
+          <div class="summary-item d-flex align-items-center justify-content-between py-3 border-bottom border-secondary-subtle" *ngFor="let item of cartItems">
+            <div class="d-flex align-items-center gap-3">
+              <div class="summary-item-emoji">📦</div>
+              <div>
+                <h6 class="fw-bold mb-0 text-white">{{ item.product.name }}</h6>
+                <small class="text-muted">Quantity: {{ item.quantity }}</small>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="fw-semibold">{{ (item.product.price * item.quantity) | currency }}</span>
+              <div class="qty-controls mt-1">
+                <button class="qty-btn" (click)="updateQuantity(item.product.id, item.quantity - 1)">-</button>
+                <span class="mx-2 small">{{ item.quantity }}</span>
+                <button class="qty-btn" (click)="updateQuantity(item.product.id, item.quantity + 1)">+</button>
+                <button class="remove-btn ms-2" (click)="removeFromCart(item.product.id)">🗑️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="price-totals mt-3">
+          <div class="d-flex justify-content-between py-2 text-muted">
+            <span>Subtotal</span>
+            <span>{{ totalPrice | currency }}</span>
+          </div>
+          <div class="d-flex justify-content-between py-2 text-muted">
+            <span>Shipping</span>
+            <span class="text-success fw-bold">FREE</span>
+          </div>
+          <hr class="border-secondary">
+          <div class="d-flex justify-content-between py-2 fw-bold text-white fs-4">
+            <span>Total</span>
+            <span class="text-indigo">{{ totalPrice | currency }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

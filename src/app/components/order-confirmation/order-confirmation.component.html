@@ -1,0 +1,76 @@
+<div class="container py-5">
+  <!-- Loading state -->
+  <div class="row my-5" *ngIf="isLoading">
+    <div class="col text-center text-white">
+      <div class="spinner-border text-success" role="status"></div>
+      <p class="mt-2">Retrieving invoice info...</p>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div class="row my-5" *ngIf="errorMessage && !isLoading">
+    <div class="col-md-8 mx-auto text-center glass-panel p-5 text-white">
+      <div class="error-emoji">⚠️</div>
+      <h3 class="fw-bold text-danger mt-3">An error occurred</h3>
+      <p class="text-muted">{{ errorMessage }}</p>
+      <a routerLink="/products" class="btn btn-premium mt-3">🛍️ Back to Catalog</a>
+    </div>
+  </div>
+
+  <!-- Success confirmation card -->
+  <div class="row" *ngIf="order && !isLoading && !errorMessage">
+    <div class="col-md-8 mx-auto">
+      <div class="glass-panel p-5 text-center text-white success-container">
+        <!-- Success Tick -->
+        <div class="success-icon-wrapper mb-4">
+          <div class="success-icon">✓</div>
+        </div>
+
+        <h1 class="display-6 fw-bold text-success mb-2">Order Confirmed!</h1>
+        <p class="text-indigo fs-5 mb-4">Thank you for shopping with us. Your order has been placed successfully.</p>
+
+        <!-- Invoice Panel -->
+        <div class="invoice-box p-4 text-start rounded mb-4">
+          <div class="row mb-3 pb-2 border-bottom border-secondary-subtle">
+            <div class="col-6">
+              <span class="text-muted small">ORDER ID</span>
+              <h5 class="fw-bold mb-0 text-indigo">#{{ order.id }}</h5>
+            </div>
+            <div class="col-6 text-end">
+              <span class="text-muted small">DATE PLACE</span>
+              <p class="fw-bold mb-0">{{ order.createdAt | date:'medium' }}</p>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-12">
+              <span class="text-muted small">DELIVERY ADDRESS</span>
+              <p class="fw-semibold mb-0">{{ order.adress }}</p>
+            </div>
+          </div>
+
+          <div class="row mb-1">
+            <div class="col-6">
+              <span class="text-muted small">PAYMENT METHOD</span>
+              <p class="fw-semibold mb-0">Cash on Delivery (COD)</p>
+            </div>
+            <div class="col-6 text-end">
+              <span class="text-muted small">TOTAL PAID</span>
+              <h4 class="fw-bold mb-0 text-success">{{ order.totalPrice | currency }}</h4>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-4">
+          <a [routerLink]="['/orders', order.id, 'track']" class="btn btn-premium btn-lg px-4">
+            🛰️ Track Order Status
+          </a>
+          <a routerLink="/products" class="btn btn-outline-light btn-lg px-4">
+            🛍️ Continue Shopping
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

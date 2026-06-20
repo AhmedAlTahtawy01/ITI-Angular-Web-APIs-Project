@@ -79,6 +79,19 @@
         }
       </div>
 
+      <!-- Account Type -->
+      <div class="form-group">
+        <label for="roles" class="form-label">Account Type</label>
+        <div class="input-wrapper">
+          <span class="input-icon">💼</span>
+          <select id="roles" formControlName="roles" class="form-input" style="background-color: #171730; color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); width: 100%; padding: 0.75rem; border-radius: 0.5rem; cursor: pointer;">
+            <option value="User">Standard User (Customer)</option>
+            <option value="Delivery">Delivery Partner (Logistics)</option>
+            <option value="Admin">Administrator</option>
+          </select>
+        </div>
+      </div>
+
       <!-- Password -->
       <div class="form-group">
         <label for="password" class="form-label">Password</label>

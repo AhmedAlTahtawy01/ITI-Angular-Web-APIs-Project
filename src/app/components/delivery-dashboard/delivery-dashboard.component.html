@@ -1,0 +1,133 @@
+<div class="container py-5">
+  <div class="row mb-5">
+    <div class="col">
+      <h1 class="text-white fw-bold header-gradient">🚚 Logistics Control Center</h1>
+      <p class="text-indigo">Manage package dispatching, route updates, and delivery fulfillment</p>
+    </div>
+  </div>
+
+  <!-- Tab Selector pills -->
+  <div class="row mb-4 justify-content-center">
+    <div class="col-md-10 text-center">
+      <div class="tab-pills">
+        <button
+          class="pill-btn"
+          [class.active-pill]="activeTab === 'Pending'"
+          (click)="setTab('Pending')"
+        >
+          📥 Pending Shipments
+        </button>
+        <button
+          class="pill-btn"
+          [class.active-pill]="activeTab === 'Shipped'"
+          (click)="setTab('Shipped')"
+        >
+          🚚 Active Shipments
+        </button>
+        <button
+          class="pill-btn"
+          [class.active-pill]="activeTab === 'Delivered'"
+          (click)="setTab('Delivered')"
+        >
+          ✅ Completed Deliveries
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages alerts -->
+  <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+    ⚠️ {{ errorMessage }}
+  </div>
+  <div class="alert alert-success text-center fw-bold" role="alert" *ngIf="actionMessage">
+    🎉 {{ actionMessage }}
+  </div>
+
+  <!-- Loading State -->
+  <div class="row my-5" *ngIf="isLoading">
+    <div class="col text-center text-white">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2">Connecting to logistics services...</p>
+    </div>
+  </div>
+
+  <!-- List content -->
+  <div *ngIf="!isLoading">
+    <!-- Empty List -->
+    <div *ngIf="orders.length === 0" class="row my-5">
+      <div class="col text-center text-white py-5 glass-panel">
+        <div class="empty-emoji">📦</div>
+        <h3 class="fw-bold mt-3">No orders in this state</h3>
+        <p class="text-muted">Currently, there are no order packages assigned to this logistics tier.</p>
+      </div>
+    </div>
+
+    <!-- Orders Cards -->
+    <div class="row g-4" *ngIf="orders.length > 0">
+      <div class="col-12" *ngFor="let order of orders">
+        <div class="glass-panel delivery-card p-4 text-white">
+          <div class="row align-items-center">
+            <!-- Order Details info -->
+            <div class="col-md-3">
+              <span class="text-muted small">ORDER ID</span>
+              <h5 class="fw-bold mb-2 text-indigo">#{{ order.id }}</h5>
+              <span class="text-muted small">CUSTOMER ID</span>
+              <p class="fw-medium mb-0 text-truncate" style="max-width: 150px;">{{ order.userId }}</p>
+            </div>
+
+            <!-- Destination and Value -->
+            <div class="col-md-5 mt-3 mt-md-0">
+              <span class="text-muted small">DESTINATION DESTINATION</span>
+              <p class="fw-semibold mb-2">{{ order.adress }}</p>
+              <span class="text-muted small">TOTAL REVENUE VALUE</span>
+              <p class="fw-bold mb-0 text-success fs-5">{{ order.totalPrice | currency }}</p>
+            </div>
+
+            <!-- Actions buttons -->
+            <div class="col-md-4 mt-3 mt-md-0 text-md-end d-flex flex-wrap gap-2 justify-content-start justify-content-md-end">
+              <a [routerLink]="['/orders', order.id, 'track']" class="btn btn-outline-light btn-sm px-3">
+                🛰️ Track Timeline
+              </a>
+              
+              <!-- Ship out pending order -->
+              <button
+                *ngIf="activeTab === 'Pending'"
+                class="btn btn-premium btn-sm px-4"
+                (click)="transitionOrder(order, 'Shipped')"
+              >
+                🚚 Dispatch Package
+              </button>
+
+              <!-- Deliver shipped order -->
+              <button
+                *ngIf="activeTab === 'Shipped'"
+                class="btn btn-success btn-sm px-4"
+                (click)="transitionOrder(order, 'Delivered')"
+              >
+                🎉 Complete Delivery
+              </button>
+
+              <!-- Completed badge -->
+              <span *ngIf="activeTab === 'Delivered'" class="badge rounded-pill bg-success-glow px-4 py-2 fw-bold">
+                ✓ Fully Delivered
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="row mt-4" *ngIf="orders.length > 0">
+      <div class="col d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-light btn-sm px-3" [disabled]="pageNumber === 1" (click)="prevPage()">
+          ◀ Previous Page
+        </button>
+        <span class="text-white fw-bold">Page {{ pageNumber }}</span>
+        <button class="btn btn-outline-light btn-sm px-3" [disabled]="!hasMoreOrders" (click)="nextPage()">
+          Next Page ▶
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

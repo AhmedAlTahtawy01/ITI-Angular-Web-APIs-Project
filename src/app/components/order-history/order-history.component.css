@@ -1,0 +1,88 @@
+.header-gradient {
+  background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-indigo {
+  color: #a5b4fc;
+}
+
+.glass-panel {
+  background: rgba(30, 30, 56, 0.65);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 1.25rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.empty-orders-emoji {
+  font-size: 5rem;
+  animation: bounce 2s infinite;
+}
+
+.order-card {
+  transition: all 0.25s ease-in-out;
+  border-left: 4px solid rgba(102, 126, 234, 0.5) !important;
+}
+
+.order-card:hover {
+  transform: translateY(-3px);
+  border-color: #667eea !important;
+  border-left: 4px solid #667eea !important;
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+}
+
+/* Status Badge Styles */
+.status-badge {
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.5em 1em;
+}
+
+.badge-pending {
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.2);
+}
+
+.badge-shipped {
+  background-color: rgba(129, 140, 248, 0.15);
+  color: #818cf8;
+  border: 1px solid rgba(129, 140, 248, 0.4);
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.2);
+}
+
+.badge-delivered {
+  background-color: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.2);
+}
+
+.badge-cancelled {
+  background-color: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.2);
+}
+
+.btn-premium {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-premium:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 15px rgba(118, 75, 162, 0.5);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}

@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg premium-navbar" *ngIf="checkLoginStatus()">
+  <div class="container">
+    <a class="navbar-brand brand-glow" [routerLink]="userRole === 'Delivery' ? '/delivery' : '/products'">
+      <span class="brand-emoji">⚡</span> SparkShop <span *ngIf="userRole === 'Delivery'" class="small" style="font-size: 0.8rem; color: #a5b4fc; margin-left: 0.2rem;">Logistics</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- Customer Routes -->
+        <ng-container *ngIf="userRole !== 'Delivery'">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/products" routerLinkActive="active-link">🛍️ Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/wishlist" routerLinkActive="active-link">❤️ Wishlist</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/orders" routerLinkActive="active-link">📦 Orders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/user-profile" routerLinkActive="active-link">👤 Profile</a>
+          </li>
+        </ng-container>
+
+        <!-- Delivery Routes -->
+        <ng-container *ngIf="userRole === 'Delivery'">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/delivery" routerLinkActive="active-link">🚚 Delivery Dashboard</a>
+          </li>
+        </ng-container>
+      </ul>
+      <div class="d-flex align-items-center gap-3">
+        <!-- Cart (only for customers) -->
+        <a class="btn-cart-nav" routerLink="/checkout" *ngIf="userRole !== 'Delivery'">
+          🛒 Cart
+          <span class="badge rounded-pill bg-cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+        </a>
+        <span class="role-badge" *ngIf="userRole">Role: {{ userRole }}</span>
+        <button class="btn btn-outline-light btn-sm" (click)="logout()">🚪 Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>

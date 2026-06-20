@@ -1,0 +1,124 @@
+<div class="container py-5">
+  <div class="row mb-5">
+    <div class="col">
+      <a routerLink="/orders" class="text-indigo text-decoration-none fw-semibold">
+        ← Back to Order History
+      </a>
+      <h1 class="text-white fw-bold mt-2 header-gradient">📄 Order Invoice</h1>
+      <p class="text-indigo">Detailed receipt and breakdown for your order</p>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="row my-5" *ngIf="isLoading">
+    <div class="col text-center text-white">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2">Loading invoice details...</p>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+    ⚠️ {{ errorMessage }}
+  </div>
+
+  <div class="row g-4" *ngIf="order && !isLoading">
+    <!-- Invoice details -->
+    <div class="col-lg-8">
+      <div class="glass-panel p-4 text-white">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+          <h4 class="fw-bold mb-0">📋 Ordered Items</h4>
+          <span class="badge rounded-pill bg-indigo px-3 py-2">Status: {{ order.orderState }}</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle premium-table">
+            <thead>
+              <tr class="text-muted">
+                <th>Product Description</th>
+                <th class="text-center">Unit Price</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-end">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- If OrderDetails are loaded -->
+              <tr *ngFor="let item of order.orderDetails">
+                <td>
+                  <div class="d-flex align-items-center gap-3">
+                    <span class="product-icon-box">📦</span>
+                    <div>
+                      <h6 class="fw-bold mb-0">{{ item.product?.name || ('Product #' + item.productId) }}</h6>
+                      <small class="text-muted">{{ item.product?.description || 'No description' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">{{ item.unitPrice | currency }}</td>
+                <td class="text-center fw-semibold">{{ item.amount }}</td>
+                <td class="text-end fw-bold text-indigo">{{ (item.unitPrice * item.amount) | currency }}</td>
+              </tr>
+              <!-- Fallback if orderDetails list is empty (should not happen with eager loading) -->
+              <tr *ngIf="!order.orderDetails || order.orderDetails.length === 0">
+                <td colspan="4" class="text-center text-muted py-4">
+                  No items listed or eager-loading still processing.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Total Price -->
+        <div class="price-summary mt-4 p-3 rounded">
+          <div class="d-flex justify-content-between py-2 text-muted">
+            <span>Subtotal</span>
+            <span>{{ order.totalPrice | currency }}</span>
+          </div>
+          <div class="d-flex justify-content-between py-2 text-muted">
+            <span>Shipping</span>
+            <span class="text-success fw-bold">FREE</span>
+          </div>
+          <hr class="border-secondary">
+          <div class="d-flex justify-content-between py-2 fw-bold fs-4">
+            <span>Total Invoice</span>
+            <span class="text-success">{{ order.totalPrice | currency }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info side-card -->
+    <div class="col-lg-4">
+      <div class="glass-panel p-4 text-white h-100 d-flex flex-column justify-content-between">
+        <div>
+          <h4 class="fw-bold mb-4 border-bottom border-secondary pb-2">📦 Order Summary</h4>
+
+          <div class="mb-4">
+            <span class="text-muted small">ORDER ID</span>
+            <h5 class="fw-bold text-indigo">#{{ order.id }}</h5>
+          </div>
+
+          <div class="mb-4">
+            <span class="text-muted small">DATE PLACED</span>
+            <p class="fw-semibold">{{ order.createdAt | date:'medium' }}</p>
+          </div>
+
+          <div class="mb-4">
+            <span class="text-muted small">DELIVERY ADDRESS</span>
+            <p class="fw-semibold">{{ order.adress }}</p>
+          </div>
+
+          <div class="mb-4">
+            <span class="text-muted small">PAYMENT METHOD</span>
+            <p class="fw-semibold">Cash on Delivery (COD)</p>
+          </div>
+        </div>
+
+        <div class="d-grid mt-4">
+          <a [routerLink]="['/orders', order.id, 'track']" class="btn btn-premium btn-lg py-3">
+            🛰️ Track Order Status
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

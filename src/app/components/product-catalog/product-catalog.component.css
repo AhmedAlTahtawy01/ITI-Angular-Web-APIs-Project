@@ -1,0 +1,107 @@
+.header-gradient {
+  background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-indigo {
+  color: #a5b4fc;
+}
+
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.pill-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.6rem 1.25rem;
+  border-radius: 2rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.pill-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.active-pill {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
+}
+
+.product-card {
+  background: rgba(30, 30, 56, 0.65) !important;
+  border: 1px solid rgba(102, 126, 234, 0.2) !important;
+  border-radius: 1rem !important;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(102, 126, 234, 0.25);
+  border-color: rgba(102, 126, 234, 0.45) !important;
+}
+
+.card-img-placeholder {
+  height: 180px;
+  background: linear-gradient(135deg, #2e2e54 0%, #171730 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.emoji-illustration {
+  font-size: 4.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .emoji-illustration {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.product-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.4rem 0.85rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(118, 75, 162, 0.4);
+}
+
+.btn-premium {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-premium:hover:not([disabled]) {
+  transform: scale(1.03);
+  box-shadow: 0 6px 15px rgba(118, 75, 162, 0.5);
+}
+
+.stock-indicator {
+  font-size: 0.85rem;
+  font-weight: 500;
+}

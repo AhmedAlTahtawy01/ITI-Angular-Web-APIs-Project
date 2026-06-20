@@ -69,8 +69,13 @@ export class LoginComponent implements OnInit {
       next: (res) => {
         this.isLoading = false;
         console.log('Login successful. Status 200 received.', res);
-        // Perform Router.navigate to route to the user profile or returnUrl
-        this.router.navigate([this.returnUrl]);
+        
+        const role = this.authService.getUserRole();
+        if (role === 'Delivery') {
+          this.router.navigate(['/delivery']);
+        } else {
+          this.router.navigate([this.returnUrl]);
+        }
       },
       error: (err) => {
         this.isLoading = false;

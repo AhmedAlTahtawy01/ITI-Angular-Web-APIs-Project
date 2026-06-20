@@ -38,7 +38,7 @@ export class RegisterComponent implements OnInit {
       userName: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.pattern(/^[0-9]{10,15}$/)]],
-      roles: [['User']],  // الدور الافتراضي
+      roles: ['User'],  // الدور الافتراضي
       password: ['', [Validators.required, Validators.minLength(8),
       Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/)]],
       confirmPassword: ['', Validators.required]
@@ -73,7 +73,7 @@ export class RegisterComponent implements OnInit {
       email: this.registerForm.value.email,
       password: this.registerForm.value.password,
       phoneNumber: this.registerForm.value.phoneNumber || "",
-      roles: this.registerForm.value.roles || ["User"],
+      roles: Array.isArray(this.registerForm.value.roles) ? this.registerForm.value.roles : [this.registerForm.value.roles || "User"],
       photoUrl: "",
       adress: ""
     };

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +14,6 @@ namespace Shared.DTO
         public string Adress { get; set; }
         public string OrderState { get; set; }
         public DateTime CreatedAt { get; set; }
+        public ICollection<OrderDetailsDto>? OrderDetails { get; set; }
     }
 }
