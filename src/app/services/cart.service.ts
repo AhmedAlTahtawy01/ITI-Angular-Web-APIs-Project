@@ -38,23 +38,40 @@ export class CartService {
     return this.cartItemsSubject.value;
   }
 
-  addToCart(product: ProductDto, quantity: number = 1): void {
+  getQuantityForProduct(productId: number): number {
+    return this.getCartItems().find(item => item.product.id === productId)?.quantity ?? 0;
+  }
+
+  addToCart(product: ProductDto, quantity: number = 1): boolean {
+    if (product.amount <= 0 || quantity <= 0) {
+      return false;
+    }
+
     const current = this.getCartItems();
     const existing = current.find(item => item.product.id === product.id);
+    const requestedQuantity = (existing?.quantity ?? 0) + quantity;
+    const cappedQuantity = Math.min(product.amount, requestedQuantity);
 
     if (existing) {
-      existing.quantity += quantity;
+      const previousQuantity = existing.quantity;
+      if (previousQuantity === cappedQuantity) {
+        return false;
+      }
+      existing.quantity = cappedQuantity;
+      existing.product = product;
       this.saveCart([...current]);
-    } else {
-      this.saveCart([...current, { product, quantity }]);
+      return cappedQuantity > previousQuantity;
     }
+
+    this.saveCart([...current, { product, quantity: cappedQuantity }]);
+    return true;
   }
 
   updateQuantity(productId: number, quantity: number): void {
     let current = this.getCartItems();
     const item = current.find(i => i.product.id === productId);
     if (item) {
-      item.quantity = quantity;
+      item.quantity = Math.min(item.product.amount, quantity);
       if (item.quantity <= 0) {
         current = current.filter(i => i.product.id !== productId);
       }

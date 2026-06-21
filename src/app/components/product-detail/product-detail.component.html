@@ -1,0 +1,80 @@
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a routerLink="/products" [queryParams]="{ categoryId: categoryId }" class="text-indigo-300 text-decoration-none">Catalog</a>
+        </li>
+        <li class="breadcrumb-item text-muted" aria-current="page">{{ categoryName || 'Loading...' }}</li>
+        <li class="breadcrumb-item text-white active" aria-current="page">{{ product?.name || 'Product Detail' }}</li>
+      </ol>
+    </nav>
+    <button class="btn btn-outline-indigo btn-sm fw-bold" (click)="goBack()">
+      Back to Catalog
+    </button>
+  </div>
+
+  <div class="alert alert-danger glass-panel text-white border-danger mb-4" role="alert" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="card glass-panel p-5 text-center text-white" *ngIf="isLoading && !errorMessage">
+    <div class="spinner-border text-indigo mb-3" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="text-muted">Fetching product specifications...</p>
+  </div>
+
+  <div class="card glass-panel p-4 p-md-5 overflow-hidden" *ngIf="!isLoading && !errorMessage && product">
+    <div class="row g-5">
+      <div class="col-12 col-md-5 d-flex align-items-center justify-content-center">
+        <div class="product-image-container w-100">
+          <span class="product-price-badge">{{ product.price | currency:'USD':'symbol':'1.0-2' }}</span>
+          <div class="product-illustration-large" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-7 d-flex flex-column text-white">
+        <div class="mb-3">
+          <span class="badge category-badge mb-2">{{ categoryName }}</span>
+          <h1 class="display-6 fw-bold text-white header-gradient">{{ product.name }}</h1>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="text-indigo-300 fw-bold border-bottom border-dark-glow pb-2 mb-2">Description</h5>
+          <p class="text-muted leading-relaxed">
+            {{ product.description || 'This premium item comes with a complete manufacturer warranty and top-tier support. No extra description has been provided by the vendor.' }}
+          </p>
+        </div>
+
+        <div class="mt-auto pt-3">
+          <div class="row align-items-center g-3 mb-4">
+            <div class="col-auto">
+              <span class="stock-indicator" [class.in-stock]="availableStock > 0" [class.out-of-stock]="availableStock <= 0">
+                {{ availableStock > 0 ? (availableStock + ' available') : 'Stock limit reached' }}
+              </span>
+            </div>
+
+            <div class="col-auto d-flex align-items-center gap-2" *ngIf="availableStock > 0">
+              <button class="btn btn-qty" (click)="decrementQuantity()" [disabled]="quantity <= 1">-</button>
+              <input type="number" class="form-control bg-dark-input text-white border-indigo-200 text-center qty-input" [(ngModel)]="quantity" readonly>
+              <button class="btn btn-qty" (click)="incrementQuantity()" [disabled]="quantity >= availableStock">+</button>
+            </div>
+          </div>
+
+          <button
+            class="btn btn-premium w-100 py-3 fs-5 fw-bold"
+            [disabled]="availableStock <= 0"
+            (click)="addToCart()"
+          >
+            {{ availableStock > 0 ? 'Add to Cart' : 'Stock Limit Reached' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cart-toast" *ngIf="cartToastVisible">
+  {{ cartToastMessage }}
+</div>

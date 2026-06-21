@@ -1,77 +1,285 @@
-<div class="container py-5">
-  <div class="row mb-5">
-    <div class="col text-center">
-      <h1 class="display-5 fw-bold text-white header-gradient">✨ Explore Our Premium Catalog</h1>
-      <p class="text-indigo">Find top-tier items curated specifically for your lifestyle</p>
+<div class="container py-4">
+  <!-- Header Title -->
+  <div class="row mb-4">
+    <div class="col-12 text-center text-md-start">
+      <h1 class="display-6 fw-bold text-white header-gradient">🛍️ SparkShop Premium Catalog</h1>
+      <p class="text-indigo mb-0">Browse through our high-end, handpicked selection of top-tier products.</p>
     </div>
   </div>
 
-  <!-- Loading State -->
-  <div class="row my-5" *ngIf="isLoading">
-    <div class="col text-center text-white">
-      <div class="spinner-border text-primary" role="status"></div>
-      <p class="mt-2">Fetching collections...</p>
-    </div>
-  </div>
+  <div class="row g-4">
+    <!-- Left Sidebar: Filter Panel -->
+    <div class="col-12 col-lg-3">
+      <div class="card glass-panel filter-sidebar p-3 mb-4">
+        <h5 class="text-white fw-bold mb-3 d-flex align-items-center">
+          <span>🔍 Filter Products</span>
+        </h5>
 
-  <!-- Error State -->
-  <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
-    ⚠️ {{ errorMessage }}
-  </div>
-
-  <!-- Catalog content -->
-  <div *ngIf="!isLoading && !errorMessage">
-    <!-- Category Tabs -->
-    <div class="row mb-4 justify-content-center">
-      <div class="col-md-10 text-center">
-        <div class="category-pills">
-          <button
-            *ngFor="let cat of categories"
-            class="pill-btn"
-            [class.active-pill]="cat.id === selectedCategoryId"
-            (click)="selectCategory(cat.id)"
-          >
-            {{ cat.name }}
-          </button>
+        <!-- Search Bar -->
+        <div class="mb-3">
+          <label class="form-label text-indigo-300 small fw-bold">Search Item</label>
+          <div class="input-group">
+            <span class="input-group-text bg-dark-input text-muted border-indigo-200">🔎</span>
+            <input
+              type="text"
+              class="form-control bg-dark-input text-white border-indigo-200"
+              placeholder="Type to search..."
+              [ngModel]="searchQuery"
+              (ngModelChange)="onSearchChange($event)"
+            />
+          </div>
         </div>
+
+        <!-- Price Range -->
+        <div class="mb-3">
+          <label class="form-label text-indigo-300 small fw-bold">Price Range</label>
+          <div class="row g-2">
+            <div class="col-6">
+              <input
+                type="number"
+                class="form-control bg-dark-input text-white border-indigo-200"
+                placeholder="Min ($)"
+                [(ngModel)]="minPrice"
+                (ngModelChange)="onPriceChange()"
+                min="0"
+              />
+            </div>
+            <div class="col-6">
+              <input
+                type="number"
+                class="form-control bg-dark-input text-white border-indigo-200"
+                placeholder="Max ($)"
+                [(ngModel)]="maxPrice"
+                (ngModelChange)="onPriceChange()"
+                min="0"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Order By / Sort -->
+        <div class="mb-3">
+          <label class="form-label text-indigo-300 small fw-bold">Sort By</label>
+          <select
+            class="form-select bg-dark-input text-white border-indigo-200"
+            [(ngModel)]="orderBy"
+            (change)="applySort()"
+          >
+            <option value="">Default Sorting</option>
+            <option value="name">Name (A-Z)</option>
+            <option value="name desc">Name (Z-A)</option>
+            <option value="price">Price (Low to High)</option>
+            <option value="price desc">Price (High to Low)</option>
+          </select>
+        </div>
+
+        <!-- View Mode Switcher -->
+        <div class="mb-4">
+          <label class="form-label text-indigo-300 small fw-bold d-block">Layout Mode</label>
+          <div class="btn-group w-100" role="group">
+            <button
+              type="button"
+              class="btn btn-outline-indigo"
+              [class.active]="viewMode === 'grid'"
+              (click)="viewMode = 'grid'"
+            >
+              🔳 Grid
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-indigo"
+              [class.active]="viewMode === 'list'"
+              (click)="viewMode = 'list'"
+            >
+              📃 List
+            </button>
+          </div>
+        </div>
+
+        <!-- Reset Button -->
+        <button
+          type="button"
+          class="btn btn-outline-danger w-100 fw-bold"
+          (click)="resetFilters()"
+        >
+          🔄 Reset Filters
+        </button>
       </div>
     </div>
 
-    <!-- Product Grid -->
-    <div class="row g-4" *ngIf="products.length > 0; else noProducts">
-      <div class="col-12 col-md-6 col-lg-4" *ngFor="let prod of products">
-        <div class="card product-card h-100">
-          <div class="card-img-placeholder">
-            <span class="product-badge">{{ prod.price | currency }}</span>
-            <div class="emoji-illustration">📦</div>
+    <!-- Right Main Catalog Content -->
+    <div class="col-12 col-lg-9">
+      <!-- Category Tabs (Horizontal Pills) -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <div class="category-pills-container d-flex flex-nowrap overflow-auto py-2" *ngIf="!isCategoriesLoading">
+            <button
+              *ngFor="let cat of categories"
+              class="pill-btn text-nowrap me-2"
+              [class.active-pill]="cat.id === selectedCategoryId"
+              (click)="selectCategory(cat.id)"
+            >
+              🏷️ {{ cat.name }}
+            </button>
           </div>
-          <div class="card-body d-flex flex-column text-white">
-            <h5 class="card-title fw-bold">{{ prod.name }}</h5>
-            <p class="card-text text-muted flex-grow-1">{{ prod.description || 'No description available for this item.' }}</p>
-            <div class="d-flex justify-content-between align-items-center mt-3">
-              <span class="stock-indicator text-indigo" [class.text-danger]="prod.amount <= 0">
-                {{ prod.amount > 0 ? (prod.amount + ' in stock') : 'Out of Stock' }}
-              </span>
-              <button
-                class="btn btn-premium btn-sm"
-                [disabled]="prod.amount <= 0"
-                (click)="addToCart(prod)"
-              >
-                🛒 Add to Cart
-              </button>
+          <!-- Category pills skeleton -->
+          <div class="d-flex gap-2 py-2" *ngIf="isCategoriesLoading">
+            <div class="skeleton-pill" *ngFor="let s of [1,2,3,4]"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div class="alert alert-danger glass-panel text-white border-danger mb-4" role="alert" *ngIf="errorMessage">
+        ⚠️ {{ errorMessage }}
+      </div>
+
+      <!-- Results Info Bar -->
+      <div class="results-bar d-flex justify-content-between align-items-center text-white-50 mb-3"
+           *ngIf="!isLoading && !errorMessage && products.length > 0">
+        <span class="small fw-semibold">
+          📊 Showing {{ products.length }} of {{ pagination.totalCount }} products in <strong class="text-indigo">{{ selectedCategoryName }}</strong>
+        </span>
+        <span class="small">
+          Page {{ pagination.currentPage }} / {{ pagination.totalPages }}
+        </span>
+      </div>
+
+      <!-- Loading State (Skeleton Screen) -->
+      <div class="row g-4" *ngIf="isLoading">
+        <div class="col-12 col-md-6 col-lg-4" *ngFor="let item of [1, 2, 3, 4, 5, 6]">
+          <div class="card product-card skeleton-card h-100">
+            <div class="skeleton-img"></div>
+            <div class="card-body">
+              <div class="skeleton-text title"></div>
+              <div class="skeleton-text body"></div>
+              <div class="skeleton-text body-short"></div>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="skeleton-text badge-pulse"></div>
+                <div class="skeleton-text btn-pulse"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Empty collection -->
-    <ng-template #noProducts>
-      <div class="row my-5">
-        <div class="col text-center text-white">
-          <p class="lead">No products found in this category.</p>
+      <!-- Products Display Section -->
+      <div *ngIf="!isLoading && !errorMessage">
+        <!-- Grid View Mode -->
+        <div class="row g-4" *ngIf="viewMode === 'grid' && products.length > 0">
+          <div class="col-12 col-md-6 col-lg-4" *ngFor="let prod of products">
+            <div class="card product-card h-100 cursor-pointer" (click)="goToProductDetail(prod.id)">
+              <div class="card-img-placeholder">
+                <span class="product-badge">{{ prod.price | currency:'USD':'symbol':'1.0-2' }}</span>
+                <div class="emoji-illustration">📦</div>
+              </div>
+              <div class="card-body d-flex flex-column text-white">
+                <h5 class="card-title fw-bold text-truncate">{{ prod.name }}</h5>
+                <p class="card-text text-muted flex-grow-1 card-description-limit">
+                  {{ prod.description || 'No description available for this item.' }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-dark-glow">
+                  <span class="stock-indicator" [class.in-stock]="prod.amount > 0" [class.out-of-stock]="prod.amount <= 0">
+                    {{ prod.amount > 0 ? (prod.amount + ' in stock') : 'Out of Stock' }}
+                  </span>
+                  <button
+                    class="btn btn-premium btn-sm"
+                    [disabled]="prod.amount <= 0"
+                    (click)="addToCart(prod, $event)"
+                  >
+                    🛒 Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- List View Mode -->
+        <div class="row g-3" *ngIf="viewMode === 'list' && products.length > 0">
+          <div class="col-12" *ngFor="let prod of products">
+            <div class="card product-card list-card cursor-pointer p-2" (click)="goToProductDetail(prod.id)">
+              <div class="row align-items-center g-3">
+                <div class="col-auto">
+                  <div class="list-img-placeholder">
+                    <div class="emoji-illustration-sm">📦</div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card-body p-0 text-white">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-1">
+                      <h5 class="card-title fw-bold mb-0 me-3">{{ prod.name }}</h5>
+                      <span class="fs-5 fw-bold text-indigo">{{ prod.price | currency:'USD':'symbol':'1.0-2' }}</span>
+                    </div>
+                    <p class="card-text text-muted small text-truncate-list mb-2">
+                      {{ prod.description || 'No description available for this item.' }}
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="stock-indicator" [class.in-stock]="prod.amount > 0" [class.out-of-stock]="prod.amount <= 0">
+                        {{ prod.amount > 0 ? (prod.amount + ' in stock') : 'Out of Stock' }}
+                      </span>
+                      <button
+                        class="btn btn-premium btn-sm py-1 px-3"
+                        [disabled]="prod.amount <= 0"
+                        (click)="addToCart(prod, $event)"
+                      >
+                        🛒 Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="glass-panel text-center text-white py-5 px-4 my-3" *ngIf="products.length === 0">
+          <div class="empty-emoji mb-3">📦</div>
+          <h4 class="fw-bold text-white">No Products Found</h4>
+          <p class="text-muted max-width-400 mx-auto">
+            We couldn't find any products in this category that match your search filters. Try adjusting your range or clearing search input.
+          </p>
+          <button class="btn btn-premium mt-3" (click)="resetFilters()">
+            Clear All Filters
+          </button>
+        </div>
+
+        <!-- Pagination Controls -->
+        <nav aria-label="Page navigation" class="mt-4" *ngIf="pagination.totalPages > 1">
+          <ul class="pagination justify-content-center gap-2">
+            <li class="page-item">
+              <button
+                class="btn pagination-btn"
+                [disabled]="!pagination.hasPrevious"
+                (click)="changePage(pageNumber - 1)"
+              >
+                ◀ Previous
+              </button>
+            </li>
+            <li class="page-item d-flex align-items-center">
+              <span class="pagination-info text-white-50 px-2 fw-semibold">
+                Page {{ pagination.currentPage }} of {{ pagination.totalPages }}
+              </span>
+            </li>
+            <li class="page-item">
+              <button
+                class="btn pagination-btn"
+                [disabled]="!pagination.hasNext"
+                (click)="changePage(pageNumber + 1)"
+              >
+                Next ▶
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
-    </ng-template>
+    </div>
   </div>
 </div>
+
+<!-- Cart Toast Notification -->
+<div class="cart-toast" *ngIf="cartToastVisible">
+  {{ cartToastMessage }}
+</div>
+

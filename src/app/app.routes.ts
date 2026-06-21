@@ -5,6 +5,7 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { WishlistComponent } from './components/wishlist/wishlist.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password';
 import { ProductCatalogComponent } from './components/product-catalog/product-catalog.component';
+import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { OrderConfirmationComponent } from './components/order-confirmation/order-confirmation.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
@@ -32,6 +33,11 @@ export const routes: Routes = [
   {
     path: 'products',
     component: ProductCatalogComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'products/:categoryId/:productId',
+    component: ProductDetailComponent,
     canActivate: [authGuard]
   },
   {

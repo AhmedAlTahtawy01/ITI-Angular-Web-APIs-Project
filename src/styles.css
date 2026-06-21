@@ -1,1 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap');
+
+body {
+  background: linear-gradient(135deg, #0f0f1a 0%, #1e1e38 100%) !important;
+  color: #ffffff;
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Cairo', sans-serif;
+  background-attachment: fixed !important;
+}
